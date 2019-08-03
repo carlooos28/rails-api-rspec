@@ -1,28 +1,27 @@
 class PostsController < ApplicationController
 
-  rescue_from Excepcion do |e|
-
+  rescue_from Exception do |e|
     render json: {error: e.message}, status: :internal_error
-  end	
+  end
 
   rescue_from ActiveRecord::RecordInvalid do |e|
     render json: {error: e.message}, status: :unprocessable_entity
-  end	
+  end
 
-  # GET /post
+  # GET /posts
   def index
-    @posts = Post.where("published = ?", true)  
-    render json: @posts, status: :ok 
+    @posts = Post.where(published: true)
+    render json: @posts, status: :ok
   end
 
-  # /GET /post/{id}
-  def show 
+  # GET /posts/{id}
+  def show
     @post = Post.find(params[:id])
-    render json: @post, status: :ok 
+    render json: @post, status: :ok
   end
 
-  # POST /posts 
-  def create 
+  # POST /posts
+  def create
     @post = Post.create!(create_params)
     render json: @post, status: :created
   end
@@ -34,7 +33,7 @@ class PostsController < ApplicationController
     render json: @post, status: :ok
   end
 
-  private 
+  private
 
   def create_params
     params.require(:post).permit(:title, :content, :published, :user_id)
